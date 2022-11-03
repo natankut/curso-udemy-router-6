@@ -1,35 +1,41 @@
 import { BrowserRouter } from "react-router-dom";
-import {Routes,Route,NavLink, Navigate} from "react-router-dom";
-import { LazyPage2, LazyPage3,LazyPage1 } from "../01-lazyload/pages";
-import logo from '../logo.svg';
+import {Routes,Route, Navigate} from "react-router-dom";
+import Nav from "../01-lazyload/components/Nav";
+import {Suspense} from 'react';
+// import { LazyPage2, LazyPage3,LazyPage1 } from "../01-lazyload/pages";
+
+
+import {routes} from "./routes";
+
+
+
+
 const Navigation = () => {
   return (
+    <Suspense fallback={<span>LOADING...</span>}>
       <BrowserRouter>
         <div className="main-layout">
-          <nav>
-              <img src={logo} alt="loguito de react" />
-              <ul>
-                  <li>
-                      <NavLink to="/lazy1" className={({isActive}) => isActive ? 'nav-active' : ''}>Lazy 1</NavLink>
-                  </li>
-                  <li>
-                      <NavLink to="/lazy2" className={({isActive}) => isActive ? 'nav-active' : ''}>Lazy 2</NavLink>
-                  </li>
-                  <li>
-                      <NavLink to="/lazy3" className={({isActive}) => isActive ? 'nav-active' : ''}>Lazy 3</NavLink>
-                  </li>
-              </ul>
-          </nav>
+          <Nav/>
 
           <Routes>
-              <Route path="lazy1" element={<LazyPage1/>} />
-              <Route path="lazy2" element={<LazyPage2/>} />
-              <Route path="lazy3" element={<LazyPage3/>} />
-              <Route path="*" element={<Navigate to="/lazy1" replace/>} />
+
+            {
+              routes.map(({path,Component}) => (
+                <Route 
+                  key={path}
+                  path={path}
+                  element={<Component/>} 
+                />
+                
+              ))
+            }
+
+              <Route path="*" element={<Navigate to={routes[0].to} replace/>} />
           </Routes>
 
         </div>
       </BrowserRouter>
+    </Suspense>
   )
 }
 
